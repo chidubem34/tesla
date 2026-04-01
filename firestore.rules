@@ -1,0 +1,26 @@
+// firestore.rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Holdings belong to a user
+    match /holdings/{holdingId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    // Transactions belong to a user
+    match /transactions/{transactionId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    // Optional: Admins can read/write everything
+    match /{document=**} {
+      allow read, write: if request.auth != null && request.auth.token.role == "admin";
+    }
+  }
+}

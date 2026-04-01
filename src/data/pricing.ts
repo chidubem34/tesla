@@ -1,0 +1,47 @@
+export const plans = [
+  {
+    name: "Starter Plan",
+    price: "$278.45",
+    minimum: "1 share minimum",
+    features: [
+      "Minimum 1 share required",
+      "Free trading fees",
+      "Real-time market data",
+      "Basic portfolio tracking",
+      "Mobile app access",
+    ],
+    recommended: false,
+    ctaColor: "bg-gray-800 hover:bg-gray-900",
+  },
+  {
+    name: "Growth Plan",
+    price: "$2,784.50",
+    minimum: "10 shares minimum",
+    features: [
+      "Minimum 10 shares required",
+      "Free trading fees",
+      "Advanced analytics",
+      "Priority customer support",
+      "Dividend reinvestment",
+      "Tax optimization tools",
+    ],
+    recommended: true,
+    ctaColor: "bg-[#3f6ae0] hover:bg-[#3f6ae0]/90",
+  },
+  {
+    name: "Premium Plan",
+    price: "$13,922.50",
+    minimum: "50 shares minimum",
+    features: [
+      "Minimum 50 shares required",
+      "Free trading fees",
+      "Dedicated account manager",
+      "Exclusive research reports",
+      "Early access to IPOs",
+      "Portfolio rebalancing",
+      "Premium investor events",
+    ],
+    recommended: false,
+    ctaColor: "bg-gray-800 hover:bg-gray-900",
+  },
+];
