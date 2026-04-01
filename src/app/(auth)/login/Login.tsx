@@ -5,15 +5,19 @@ import { useState } from "react";
 import { auth } from "@/firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { fetchUserProfile } from "@/app/lib/auth";
+import Notification from "@/components/Notification";
 
 export default function SignInPage() {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [notif, setNotif] = useState<{
+    message: string;
+    type: "success" | "error" | "info";
+  } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
+    setNotif(null);
 
     const form = e.currentTarget;
     const email = (
@@ -34,26 +38,28 @@ export default function SignInPage() {
       // Fetch profile from Firestore to get role
       const profile = await fetchUserProfile(user.uid);
       const role = (profile?.role || "user").trim().toLowerCase();
-      
-      console.log("Login: User authenticated:", user.email);
-      console.log("Login: Fetched profile role:", role);
 
-      // Redirect based on role
-      if (role === "admin") {
-        console.log("Login: Redirecting to Admin Dashboard");
-        window.location.href = "/admin-dashboard";
-      } else {
-        console.log("Login: Redirecting to User Dashboard");
-        window.location.href = "/dashboard";
-      }
-    } catch (err: any) {
-      const code = err?.code || "";
+      setNotif({ message: "Login successful!", type: "success" });
+
+      // Redirect based on role after short delay
+      setTimeout(() => {
+        if (role === "admin") {
+          window.location.href = "/admin-dashboard";
+        } else {
+          window.location.href = "/dashboard";
+        }
+      }, 1500);
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code || "";
       if (code === "auth/user-not-found" || code === "auth/wrong-password") {
-        setMessage("Invalid email or password.");
+        setNotif({ message: "Invalid email or password.", type: "error" });
       } else if (code === "auth/too-many-requests") {
-        setMessage("Too many attempts. Try again later.");
+        setNotif({
+          message: "Too many attempts. Try again later.",
+          type: "error",
+        });
       } else {
-        setMessage(err?.message || "Login failed");
+        setNotif({ message: (err as { message?: string })?.message || "Login failed", type: "error" });
       }
     } finally {
       setLoading(false);
@@ -72,7 +78,11 @@ export default function SignInPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          method="post"
+          className="space-y-5 sm:space-y-6"
+        >
           <div>
             <label
               htmlFor="email"
@@ -137,7 +147,7 @@ export default function SignInPage() {
 
           <div className="text-center pt-4">
             <p className="text-white/60 text-sm sm:text-base">
-              Don't have an account?{" "}
+              Dont have an account?{" "}
               <Link
                 href="/register"
                 className="text-red-500 hover:underline font-semibold"
@@ -146,14 +156,17 @@ export default function SignInPage() {
               </Link>
             </p>
           </div>
-
-          {message && (
-            <div className="mt-4 p-3 rounded-lg text-center text-sm bg-red-100 text-red-700">
-              {message}
-            </div>
-          )}
         </form>
       </div>
+
+      {/* Notification */}
+      {notif && (
+        <Notification
+          message={notif.message}
+          type={notif.type}
+          onClose={() => setNotif(null)}
+        />
+      )}
     </div>
   );
 }

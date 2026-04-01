@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
+import Spinner from "@/components/Spinner";
 
 export default function ProtectedRoute({
   children,
@@ -18,7 +19,20 @@ export default function ProtectedRoute({
     }
   }, [user, loading]);
 
-  if (loading) return <p className="text-white">Loading...</p>;
+  useEffect(() => {
+    if (!loading && role && role !== allowedRole) {
+      window.location.href = "/register";
+    }
+  }, [role, allowedRole, loading]);
+
+  if (loading) {
+    return (
+      <div className="flex mt-60 items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
   if (!user) return null;
 
   if (!role) {
@@ -26,7 +40,6 @@ export default function ProtectedRoute({
   }
 
   if (role !== allowedRole) {
-    window.location.href = "/register";
     return null;
   }
 

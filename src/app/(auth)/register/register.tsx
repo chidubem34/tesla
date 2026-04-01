@@ -5,24 +5,37 @@ import { useState } from "react";
 import { auth, db } from "@/firebase/config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import Notification from "@/components/Notification";
 
 export default function SignupPage() {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [notif, setNotif] = useState<{
+    message: string;
+    type: "success" | "error" | "info";
+  } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
+    setNotif(null);
 
     const form = e.currentTarget;
-    const fullName = (form.elements.namedItem("name") as HTMLInputElement).value.trim();
-    const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
-    const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+    const fullName = (
+      form.elements.namedItem("name") as HTMLInputElement
+    ).value.trim();
+    const email = (
+      form.elements.namedItem("email") as HTMLInputElement
+    ).value.trim();
+    const password = (form.elements.namedItem("password") as HTMLInputElement)
+      .value;
 
     try {
       // Create user in Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       const user = userCredential.user;
 
       // Update Firebase Auth profile with name
@@ -37,19 +50,37 @@ export default function SignupPage() {
         createdAt: new Date().toISOString(),
       });
 
-      // Redirect to dashboard
-      window.location.href = "/dashboard";
-    } catch (err: any) {
-      // Friendly messages for common Firebase errors
-      const code = err?.code || "";
+      // Show success notification
+      setNotif({ message: "Account created successfully!", type: "success" });
+
+      // Redirect to dashboard after short delay
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1500);
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code || "";
       if (code === "auth/email-already-in-use") {
-        setMessage("That email is already registered.");
+        setNotif({
+          message: "That email is already registered.",
+          type: "error",
+        });
       } else if (code === "auth/weak-password") {
-        setMessage("Password is too weak. Use at least 6 characters.");
+        setNotif({
+          message: "Password is too weak. Use at least 6 characters.",
+          type: "error",
+        });
       } else if (code === "auth/invalid-email") {
-        setMessage("Please enter a valid email address.");
+        setNotif({
+          message: "Please enter a valid email address.",
+          type: "error",
+        });
       } else {
-        setMessage(err?.message || "Sign up failed. Try again.");
+        setNotif({
+          message:
+            (err as { message?: string })?.message ||
+            "Sign up failed. Try again.",
+          type: "error",
+        });
       }
     } finally {
       setLoading(false);
@@ -68,9 +99,12 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-3">
+        <form onSubmit={handleSubmit} method="post" className="space-y-5 sm:space-y-3">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-white/70 mb-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-white/70 mb-2"
+            >
               Full Name
             </label>
             <input
@@ -84,7 +118,10 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-white/70 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-white/70 mb-2"
+            >
               Email Address
             </label>
             <input
@@ -98,7 +135,10 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-white/70 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-white/70 mb-2"
+            >
               Password
             </label>
             <input
@@ -121,11 +161,17 @@ export default function SignupPage() {
             />
             <label htmlFor="terms" className="text-sm text-white/70">
               I agree to the{" "}
-              <Link href="/terms-of-service" className="text-red-500 hover:underline">
+              <Link
+                href="/terms-of-service"
+                className="text-red-500 hover:underline"
+              >
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link href="/privacy-policy" className="text-red-500 hover:underline">
+              <Link
+                href="/privacy-policy"
+                className="text-red-500 hover:underline"
+              >
                 Privacy Policy
               </Link>
             </label>
@@ -142,19 +188,25 @@ export default function SignupPage() {
           <div className="text-center pt-4 sm:pt-6">
             <p className="text-white/60 text-sm sm:text-base">
               Already have an account?{" "}
-              <Link href="/login" className="text-red-500 hover:underline font-semibold">
+              <Link
+                href="/login"
+                className="text-red-500 hover:underline font-semibold"
+              >
                 Sign in
               </Link>
             </p>
           </div>
-
-          {message && (
-            <div className="mt-4 p-3 rounded-lg text-center text-sm bg-red-100 text-red-700">
-              {message}
-            </div>
-          )}
         </form>
       </div>
+
+      {/* Notification */}
+      {notif && (
+        <Notification
+          message={notif.message}
+          type={notif.type}
+          onClose={() => setNotif(null)}
+        />
+      )}
     </div>
   );
 }
