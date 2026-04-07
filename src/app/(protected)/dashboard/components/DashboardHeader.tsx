@@ -18,7 +18,7 @@ export default function DashboardHeader({
   return (
     <section className="rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8 lg:p-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-md font-bold sm:text-xl lg:text-2xl text-white">
+        <h1 className="text-2xl font-bold sm:text-lg lg:text-3xl text-white">
           {header}
         </h1>
 

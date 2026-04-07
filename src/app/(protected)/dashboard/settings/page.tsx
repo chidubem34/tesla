@@ -73,11 +73,11 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex justify-center px-4 py-8">
-      <div className="w-full max-w-3xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+    <div className="min-h-screen bg-[#050505] flex justify-center py-8">
+      <div>
 
         {/* Profile Information */}
-        <section className="mb-8">
+        <section className="mb-8 w-full max-w-3xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
           <h2 className="text-xl font-semibold text-white mb-4">
             Profile Information
           </h2>
@@ -125,12 +125,14 @@ export default function SettingsPage() {
         </section>
 
         {/* Security */}
-        <section className="mb-8">
+        <section className="w-full max-w-3xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
           <h2 className="text-xl font-semibold text-white mb-4">Security</h2>
-          <div className="space-y-4">
+          <form className="space-y-4" autoComplete="off" onSubmit={(e) => e.preventDefault()}>
             <input
               type="password"
               placeholder="Current Password"
+              aria-autocomplete="none"
+              autoComplete="off"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-red-500"
@@ -138,6 +140,7 @@ export default function SettingsPage() {
             <input
               type="password"
               placeholder="New Password"
+              autoComplete="new-password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-red-500"
@@ -145,6 +148,7 @@ export default function SettingsPage() {
             <input
               type="password"
               placeholder="Confirm New Password"
+              autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-red-500"
@@ -155,7 +159,7 @@ export default function SettingsPage() {
             >
               Update Password
             </button>
-          </div>
+          </form>
         </section>
       </div>
 

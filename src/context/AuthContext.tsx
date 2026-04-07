@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, User, signOut, updateProfile } from "firebase/auth";
+import { onAuthStateChanged, User, signOut, } from "firebase/auth";
 import { auth, db } from "@/firebase/config";
 import { doc, onSnapshot, DocumentSnapshot, FirestoreError } from "firebase/firestore";
 
@@ -18,7 +18,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   role: null,
   profile: null,
-  logout: async () => {}, // default no-op
+  logout: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

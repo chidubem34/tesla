@@ -33,13 +33,13 @@ export default function Header() {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-50 bg-black rounded-lg shadow-lg border border-gray-200 py-2">
               <a
-                href="/settings#profile"
+                href="dashboard/settings"
                 className="block px-4 py-2 text-white hover:text-gray-300"
               >
                 Profile
               </a>
               <a
-                href="/settings#account"
+                href="dashboard/settings"
                 className="block px-4 py-2 text-white hover:text-gray-300"
               >
                 Account Settings

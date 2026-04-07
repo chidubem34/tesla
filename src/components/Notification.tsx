@@ -30,7 +30,7 @@ export default function Notification({
   return (
     <div className="fixed top-4 right-4 z-50">
       <div
-        className={`${bgColor} text-white px-4 py-3 rounded-lg shadow-lg backdrop-blur-xl border border-white/20 animate-slide-in`}
+        className={`${bgColor} text-white! px-4 py-3 rounded-lg shadow-lg backdrop-blur-xl border border-white/20 animate-slide-in`}
       >
         {message}
       </div>

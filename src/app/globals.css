@@ -50,5 +50,6 @@ body {
 
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
+  color: rgba(102, 96, 96, 0.701);
 }
 

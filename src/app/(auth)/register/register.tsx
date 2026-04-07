@@ -47,6 +47,7 @@ export default function SignupPage() {
         email,
         balance: 0,
         role: "user",
+        portfolio_value: 0,
         createdAt: new Date().toISOString(),
       });
 
